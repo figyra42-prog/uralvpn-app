@@ -10,11 +10,11 @@ android {
     compileSdk = 37
 
     defaultConfig {
-        applicationId = "com.v2ray.ang"
+        applicationId = "app.uralvpn"
         minSdk = 24
         targetSdk = 37
-        versionCode = 755
-        versionName = "2.3.15"
+        versionCode = 1
+        versionName = "1.0.0"
 
         val abiFilterList = (properties["ABI_FILTERS"] as? String)?.split(';')
         splits {
