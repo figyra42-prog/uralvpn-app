@@ -38,6 +38,18 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        // Fixed key committed to the repo so every CI build has the same signature and can be
+        // updated in place. Beta only — for Play Store use a separate secret keystore.
+        create("release") {
+            storeFile = file("keystore/uralvpn-release.p12")
+            storePassword = "uralvpn"
+            keyAlias = "uralvpn"
+            keyPassword = "uralvpn"
+            storeType = "PKCS12"
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -45,6 +57,10 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("release")
+        }
+        getByName("debug") {
+            signingConfig = signingConfigs.getByName("release")
         }
     }
 
