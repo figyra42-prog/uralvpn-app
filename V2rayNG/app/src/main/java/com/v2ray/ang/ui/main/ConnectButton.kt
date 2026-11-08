@@ -25,7 +25,7 @@ import com.v2ray.ang.R
 import com.v2ray.ang.ui.compose.colorFabActive
 
 /**
- * Large central connect/disconnect button, styled after the UralVPN brand.
+ * Large central connect/disconnect button with a double contour.
  */
 @Composable
 fun ConnectButton(
@@ -49,40 +49,61 @@ fun ConnectButton(
     val description = stringResource(if (isRunning) R.string.acc_stop else R.string.acc_start)
 
     Box(
-        modifier = modifier
-            .size(180.dp)
-            .shadow(
-                elevation = if (isRunning) 28.dp else 20.dp,
-                shape = CircleShape,
-                ambientColor = if (isRunning) {
-                    colorFabActive.copy(alpha = 0.45f)
-                } else {
-                    Color.Black.copy(alpha = 0.60f)
-                },
-                spotColor = if (isRunning) {
-                    colorFabActive.copy(alpha = 0.45f)
-                } else {
-                    Color.Black.copy(alpha = 0.60f)
-                },
-            )
-            .clip(CircleShape)
-            .background(backgroundBrush)
-            .then(
-                if (isRunning) {
-                    Modifier
-                } else {
-                    Modifier.border(2.dp, MaterialTheme.colorScheme.outlineVariant, CircleShape)
-                }
-            )
-            .semantics { contentDescription = description }
-            .clickable(onClick = onClick),
+        modifier = modifier.size(196.dp),
         contentAlignment = Alignment.Center,
     ) {
-        Icon(
-            painter = painterResource(R.drawable.ic_power_24dp),
-            contentDescription = null,
-            tint = if (isRunning) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.primary,
-            modifier = Modifier.size(80.dp),
+        // Outer contour (ring) with its own shadow
+        Box(
+            Modifier
+                .size(196.dp)
+                .shadow(
+                    elevation = 14.dp,
+                    shape = CircleShape,
+                    ambientColor = Color.Black.copy(alpha = 0.45f),
+                    spotColor = Color.Black.copy(alpha = 0.45f),
+                )
+                .clip(CircleShape)
+                .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+                .border(1.dp, MaterialTheme.colorScheme.outlineVariant, CircleShape),
         )
+
+        // Inner button with its own shadow / glow
+        Box(
+            Modifier
+                .size(172.dp)
+                .shadow(
+                    elevation = if (isRunning) 22.dp else 16.dp,
+                    shape = CircleShape,
+                    ambientColor = if (isRunning) {
+                        colorFabActive.copy(alpha = 0.40f)
+                    } else {
+                        Color.Black.copy(alpha = 0.60f)
+                    },
+                    spotColor = if (isRunning) {
+                        colorFabActive.copy(alpha = 0.40f)
+                    } else {
+                        Color.Black.copy(alpha = 0.60f)
+                    },
+                )
+                .clip(CircleShape)
+                .background(backgroundBrush)
+                .then(
+                    if (isRunning) {
+                        Modifier
+                    } else {
+                        Modifier.border(1.5.dp, MaterialTheme.colorScheme.outlineVariant, CircleShape)
+                    }
+                )
+                .semantics { contentDescription = description }
+                .clickable(onClick = onClick),
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.ic_power_24dp),
+                contentDescription = null,
+                tint = if (isRunning) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(72.dp),
+            )
+        }
     }
 }
