@@ -265,9 +265,9 @@ fun MainScreen(
                             groupTitle = group.remarks,
                             onOpenLink = { url -> onAction(MainAction.OpenSubscriptionLink(url)) },
                             contentPadding = PaddingValues(
-                                start = 0.dp,
+                                start = 12.dp,
                                 top = 0.dp,
-                                end = 0.dp,
+                                end = 12.dp,
                                 bottom = 80.dp
                             )
                         )

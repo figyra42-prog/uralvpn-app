@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -45,6 +46,12 @@ fun ConnectButton(
     Box(
         modifier = modifier
             .size(160.dp)
+            .shadow(
+                elevation = if (isRunning) 24.dp else 12.dp,
+                shape = CircleShape,
+                ambientColor = if (isRunning) colorFabActive else Color.Black,
+                spotColor = if (isRunning) colorFabActive else Color.Black,
+            )
             .clip(CircleShape)
             .background(backgroundColor)
             .then(
