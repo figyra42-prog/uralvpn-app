@@ -95,8 +95,14 @@ fun GroupPagerPage(
     }
     val groupState by groupStateFlow.collectAsStateWithLifecycle()
     var collapsed by remember { mutableStateOf(false) }
-    // Collapsed keeps only the first entry (Автопилот) visible.
-    val visibleRows = if (collapsed) groupState.rows.take(1) else groupState.rows
+    // Автопилот is the first server in the default (unsorted) subscription order. Keep that
+    // one visible when collapsed, regardless of the ping-sorted display order.
+    val autopilotGuid = groupState.servers.firstOrNull()?.guid
+    val visibleRows = if (collapsed) {
+        groupState.rows.filter { it.guid == autopilotGuid }
+    } else {
+        groupState.rows
+    }
     val canReorder = groupId.isNotEmpty() && searchQuery.isEmpty()
     val actions = remember(
         onSelectServer,

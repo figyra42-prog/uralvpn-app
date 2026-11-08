@@ -221,34 +221,16 @@ class MainViewModel(
     }
 
     internal fun formatStatus(status: MainStatus): String = when (status) {
-        MainStatus.Disconnected -> dataSource.getString(R.string.connection_not_connected)
-        MainStatus.Connected -> dataSource.getString(R.string.connection_connected)
-        MainStatus.Testing -> dataSource.getString(R.string.connection_test_testing)
-        is MainStatus.TestProgress -> dataSource.getString(
-            R.string.connection_running_task_left,
-            status.progress
-        )
-
+        // Only the connection-test result is shown above the card; the connected/disconnected
+        // hint and the country/IP details are hidden.
         is MainStatus.ConnectionTest -> formatConnectionTestResult(status.result)
+        else -> ""
     }
 
     private fun formatConnectionTestResult(result: ConnectionTestResult): String {
-        val status = if (result.delayMillis >= 0) {
-            val delay = dataSource.getString(R.string.server_test_delay_value, result.delayMillis)
-            dataSource.getString(R.string.connection_test_available, delay)
-        } else {
-            val detail = result.errorMessage.ifBlank {
-                dataSource.getString(R.string.connection_test_empty_message)
-            }
-            dataSource.getString(R.string.connection_test_error, detail)
-        }
-
-        if (result.delayMillis < 0 || (result.country == null && result.ipAddress == null)) {
-            return status
-        }
-
-        val unknown = dataSource.getString(R.string.value_unknown)
-        return "$status\n(${result.country ?: unknown}) ${result.ipAddress ?: unknown}"
+        if (result.delayMillis < 0) return ""
+        val delay = dataSource.getString(R.string.server_test_delay_value, result.delayMillis)
+        return dataSource.getString(R.string.connection_test_available, delay)
     }
 
     // ---------- Public state accessors ----------
