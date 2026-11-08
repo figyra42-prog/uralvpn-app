@@ -139,6 +139,7 @@ fun GroupPagerPage(
                 fallbackTitle = groupTitle,
                 onOpenLink = onOpenLink,
                 onRefresh = { mainViewModel.onAction(MainAction.UpdateGroupSubscription(groupId)) },
+                onPing = { mainViewModel.onAction(MainAction.TestRealAllServers) },
                 modifier = Modifier
                     .align(Alignment.TopCenter)
                     .onSizeChanged { infoHeightPx = it.height }

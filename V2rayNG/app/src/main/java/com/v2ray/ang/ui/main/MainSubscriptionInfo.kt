@@ -89,6 +89,7 @@ internal fun SubscriptionInfoCard(
     fallbackTitle: String,
     onOpenLink: (String) -> Unit,
     onRefresh: () -> Unit,
+    onPing: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val model = remember(info) { buildSubscriptionInfoUiModel(info, System.currentTimeMillis()) }
@@ -134,6 +135,11 @@ internal fun SubscriptionInfoCard(
                     iconRes = R.drawable.ic_refresh_24dp,
                     contentDescription = stringResource(R.string.title_sub_update),
                     onClick = onRefresh,
+                )
+                CardIconButton(
+                    iconRes = R.drawable.ic_flash_on_24dp,
+                    contentDescription = stringResource(R.string.title_real_ping_all_server),
+                    onClick = onPing,
                 )
             }
 
