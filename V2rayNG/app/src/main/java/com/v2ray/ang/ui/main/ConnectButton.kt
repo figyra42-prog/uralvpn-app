@@ -6,8 +6,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,11 +16,11 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.v2ray.ang.R
 import com.v2ray.ang.ui.compose.colorFabActive
 
@@ -35,15 +35,15 @@ fun ConnectButton(
 ) {
     val backgroundBrush = if (isRunning) {
         Brush.radialGradient(
-            colors = listOf(Color(0xFFFDFFCC), colorFabActive, Color(0xFF77A824)),
-            center = Offset(0.30f, 0.22f),
-            radius = 1.9f,
+            colors = listOf(Color(0xFFF7FFCC), colorFabActive, Color(0xFF4E7A12)),
+            center = Offset(0.30f, 0.20f),
+            radius = 2.0f,
         )
     } else {
         Brush.radialGradient(
-            colors = listOf(Color(0xFF56555F), Color(0xFF2A292F), Color(0xFF0A0A0D)),
-            center = Offset(0.30f, 0.22f),
-            radius = 1.9f,
+            colors = listOf(Color(0xFF5E5D68), Color(0xFF2A292F), Color(0xFF050508)),
+            center = Offset(0.30f, 0.20f),
+            radius = 2.0f,
         )
     }
     val description = stringResource(if (isRunning) R.string.acc_stop else R.string.acc_start)
@@ -52,17 +52,17 @@ fun ConnectButton(
         modifier = modifier
             .size(180.dp)
             .shadow(
-                elevation = if (isRunning) 24.dp else 16.dp,
+                elevation = if (isRunning) 28.dp else 20.dp,
                 shape = CircleShape,
                 ambientColor = if (isRunning) {
-                    colorFabActive.copy(alpha = 0.15f)
+                    colorFabActive.copy(alpha = 0.45f)
                 } else {
-                    Color.Black.copy(alpha = 0.55f)
+                    Color.Black.copy(alpha = 0.60f)
                 },
                 spotColor = if (isRunning) {
-                    colorFabActive.copy(alpha = 0.15f)
+                    colorFabActive.copy(alpha = 0.45f)
                 } else {
-                    Color.Black.copy(alpha = 0.55f)
+                    Color.Black.copy(alpha = 0.60f)
                 },
             )
             .clip(CircleShape)
@@ -78,10 +78,11 @@ fun ConnectButton(
             .clickable(onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
-        Text(
-            text = "⏻",
-            fontSize = 72.sp,
-            color = if (isRunning) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.primary,
+        Icon(
+            painter = painterResource(R.drawable.ic_power_24dp),
+            contentDescription = null,
+            tint = if (isRunning) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.primary,
+            modifier = Modifier.size(80.dp),
         )
     }
 }
