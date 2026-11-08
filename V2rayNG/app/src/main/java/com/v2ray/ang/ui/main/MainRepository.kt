@@ -140,6 +140,13 @@ class MainRepository(
             )
         }
         result += MmkvManager.decodeSubscriptions()
+            // The placeholder "Default" subscription (ungrouped servers) must not show as an
+            // empty group alongside a real subscription, otherwise it becomes the first, empty
+            // group and hides the actual server list until it is deleted manually.
+            .filterNot { sub ->
+                sub.guid == AppConfig.DEFAULT_SUBSCRIPTION_ID &&
+                    MmkvManager.decodeServerList(sub.guid).isEmpty()
+            }
         return result
     }
 
