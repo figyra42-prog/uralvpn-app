@@ -136,8 +136,7 @@ class RealPingWorkerService(
         val retFailure = -1L
 
         val config = MmkvManager.decodeServerConfig(guid) ?: return retFailure
-        if (!config.configType.isComplexType()
-            && config.configType != EConfigType.HYSTERIA2
+        if (config.configType != EConfigType.HYSTERIA2
             && config.configType != EConfigType.WIREGUARD
             && config.alpn?.split(',')?.all { it.trim().startsWith("h3") } != true
             && config.server.isNotNullEmpty()

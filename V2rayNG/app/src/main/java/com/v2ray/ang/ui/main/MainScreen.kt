@@ -193,32 +193,32 @@ fun MainScreen(
         ) { innerPadding ->
             val layoutDirection = LocalLayoutDirection.current
 
-            if (groups.isNotEmpty()) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+            ) {
                 Column(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .padding(innerPadding)
+                        .fillMaxWidth()
+                        .padding(top = 16.dp, bottom = 8.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    Column(
+                    ConnectButton(
+                        isRunning = isRunning,
+                        onClick = { onAction(MainAction.ToggleService) },
+                    )
+                    Spacer(modifier = Modifier.height(20.dp))
+                    Text(
+                        text = displayText,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 16.dp, bottom = 8.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        ConnectButton(
-                            isRunning = isRunning,
-                            onClick = { onAction(MainAction.ToggleService) },
-                        )
-                        Spacer(modifier = Modifier.height(20.dp))
-                        Text(
-                            text = displayText,
-                            style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            modifier = Modifier
-                                .clickable { onAction(MainAction.TestCurrentServer) },
-                        )
-                    }
+                            .clickable { onAction(MainAction.TestCurrentServer) },
+                    )
+                }
 
+                if (groups.isNotEmpty()) {
                     HorizontalPager(
                         state = pagerState,
                         modifier = Modifier.fillMaxSize(),

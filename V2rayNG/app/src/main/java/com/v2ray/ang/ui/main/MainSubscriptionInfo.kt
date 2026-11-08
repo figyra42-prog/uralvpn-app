@@ -138,7 +138,7 @@ internal fun SubscriptionInfoCard(
                 )
                 CardIconButton(
                     iconRes = R.drawable.ic_flash_on_24dp,
-                    contentDescription = stringResource(R.string.title_real_ping_all_server),
+                    contentDescription = stringResource(R.string.title_ping_all_server),
                     onClick = onPing,
                 )
             }
