@@ -384,8 +384,8 @@ private fun ServerListItem(
         if (flag.isNotEmpty()) {
             Text(
                 flag,
-                fontSize = 64.sp,
-                lineHeight = 68.sp,
+                fontSize = 80.sp,
+                lineHeight = 84.sp,
                 modifier = Modifier.padding(start = 8.dp),
             )
         }
