@@ -172,7 +172,7 @@ object HttpUtil {
             if (currentUrl == null) continue
             val client = buildOkHttpClient(request.timeout, request.httpPort, request.proxyUsername, request.proxyPassword, followRedirects = false)
             val finalUserAgent = if (request.userAgent.isNullOrBlank()) {
-                "UralVPN/${BuildConfig.VERSION_NAME}"
+                "Happ/4.3.0"
             } else {
                 request.userAgent
             }

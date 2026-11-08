@@ -1,5 +1,6 @@
 package com.v2ray.ang.fmt
 
+import com.google.gson.JsonParser
 import com.v2ray.ang.dto.V2rayConfig
 import com.v2ray.ang.dto.entities.ProfileItem
 import com.v2ray.ang.enums.EConfigType
@@ -21,6 +22,12 @@ object CustomFmt : FmtBase() {
         config.remarks = fullConfig?.remarks ?: System.currentTimeMillis().toString()
         config.server = outbound?.getServerAddress()
         config.serverPort = outbound?.getServerPort()?.toString()
+        config.serverDescription = runCatching {
+            JsonParser.parseString(str).asJsonObject
+                .getAsJsonObject("meta")
+                ?.get("serverDescription")
+                ?.asString
+        }.getOrNull()
 
         return config
     }
