@@ -82,7 +82,8 @@ class MainViewModel(
             selectedGroupId = dataSource.getSelectedSubscriptionId(),
             selectedGuid = dataSource.getSelectServer(),
             confirmRemove = dataSource.getConfirmRemove(),
-            doubleColumnDisplay = dataSource.getDoubleColumnDisplay()
+            doubleColumnDisplay = dataSource.getDoubleColumnDisplay(),
+            sortByPing = dataSource.isSortByPingEnabled()
         )
     )
     val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
@@ -214,7 +215,7 @@ class MainViewModel(
         mutableServerGroupState(request.groupId).update { current ->
             current.copy(
                 servers = applyTestDelayResults(current.servers, updates),
-                rows = applyTestDelayResultsToRows(current.rows, updates),
+                rows = sortRowsByPing(applyTestDelayResultsToRows(current.rows, updates), uiState.value.sortByPing),
             )
         }
     }
@@ -284,6 +285,7 @@ class MainViewModel(
             MainAction.RemoveDuplicateServers -> removeDuplicateServerAsync()
             MainAction.RemoveInvalidServers -> removeInvalidServerAsync()
             MainAction.SortByTestResults -> sortByTestResultsAsync()
+            MainAction.ToggleSortByPing -> toggleSortByPing()
             MainAction.UpdateSubscriptions -> importConfigViaSub(uiState.value.selectedGroupId)
             is MainAction.UpdateGroupSubscription -> importConfigViaSub(action.groupId)
             MainAction.ExportAll -> exportAllAsync()
@@ -339,7 +341,8 @@ class MainViewModel(
         _uiState.update {
             it.copy(
                 confirmRemove = dataSource.getConfirmRemove(),
-                doubleColumnDisplay = dataSource.getDoubleColumnDisplay()
+                doubleColumnDisplay = dataSource.getDoubleColumnDisplay(),
+                sortByPing = dataSource.isSortByPingEnabled()
             )
         }
     }
@@ -410,12 +413,13 @@ class MainViewModel(
         } else {
             emptyMap()
         }
-        return servers.map { server ->
+        val rows = servers.map { server ->
             buildServerRowUiModel(
                 server = server,
                 subscriptionRemarks = subscriptionRemarks[server.profile.subscriptionId].orEmpty()
             )
         }
+        return sortRowsByPing(rows, uiState.value.sortByPing)
     }
 
     fun getSubscriptions(): List<SubscriptionCache> = dataSource.getSubscriptions()
@@ -718,6 +722,27 @@ class MainViewModel(
         subs.forEach { dataSource.sortByTestResultsForSub(it) }
     }
 
+    private fun toggleSortByPing() {
+        val enabled = !uiState.value.sortByPing
+        dataSource.setSortByPingEnabled(enabled)
+        _uiState.update { it.copy(sortByPing = enabled) }
+        // Rebuild rows from the default-order server list so toggling back restores the
+        // subscription order instead of keeping the ping-sorted order.
+        val groupId = uiState.value.selectedGroupId
+        val group = mutableServerGroupState(groupId).value
+        mutableServerGroupState(groupId).update { current ->
+            current.copy(rows = buildServerRows(groupId, group.servers))
+        }
+    }
+
+    private fun sortRowsByPing(rows: List<ServerRowUiModel>, enabled: Boolean): List<ServerRowUiModel> {
+        if (!enabled) return rows
+        // Fastest reachable server first; untested (0) and failed (<0) stay at the end.
+        return rows.sortedBy { row ->
+            if (row.testDelayMillis <= 0L) Long.MAX_VALUE else row.testDelayMillis
+        }
+    }
+
     fun subscriptionIdChanged(id: String) {
         if (_uiState.value.groups.none { it.id == id }) return
         mutableServerGroupState(id)
@@ -801,8 +826,7 @@ class MainViewModel(
         val groupState = mutableServerGroupState(groupId).value
         val servers = groupState.servers.toMutableList()
         if (!servers.moveItem(fromPosition, toPosition)) return
-        val rows = groupState.rows.toMutableList()
-        rows.moveItem(fromPosition, toPosition)
+        val rows = buildServerRows(groupId, servers)
         val guids = servers.map { it.guid }
         mutableServerGroupState(groupId).value = ServerGroupUiState(servers, rows)
         // A drag emits several moves; serialize writes so an older order cannot overwrite a newer one.

@@ -81,6 +81,8 @@ fun GroupPagerPage(
     usageInfo: SubscriptionUsageInfo?,
     groupTitle: String,
     onOpenLink: (String) -> Unit,
+    sortByPing: Boolean,
+    onToggleSortByPing: () -> Unit,
     contentPadding: PaddingValues
 ) {
     val groupStateFlow = remember(groupId) {
@@ -142,6 +144,8 @@ fun GroupPagerPage(
                 onOpenLink = onOpenLink,
                 onRefresh = { mainViewModel.onAction(MainAction.UpdateGroupSubscription(groupId)) },
                 onPing = { mainViewModel.onAction(MainAction.TestRealAllServers) },
+                sortByPing = sortByPing,
+                onToggleSortByPing = onToggleSortByPing,
                 modifier = Modifier
                     .align(Alignment.TopCenter)
                     .onSizeChanged { infoHeightPx = it.height }

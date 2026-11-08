@@ -54,6 +54,7 @@ fun MainScreen(
     val selectedGuid = uiState.selectedGuid
     val doubleColumnDisplay = uiState.doubleColumnDisplay
     val confirmRemove = uiState.confirmRemove
+    val sortByPing = uiState.sortByPing
     val shareQRCodeBitmap = uiState.shareQRCodeBitmap
 
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -249,6 +250,8 @@ fun MainScreen(
                             usageInfo = group.usageInfo,
                             groupTitle = group.remarks,
                             onOpenLink = { url -> onAction(MainAction.OpenSubscriptionLink(url)) },
+                            sortByPing = sortByPing,
+                            onToggleSortByPing = { onAction(MainAction.ToggleSortByPing) },
                             contentPadding = PaddingValues(
                                 start = 12.dp,
                                 top = 0.dp,

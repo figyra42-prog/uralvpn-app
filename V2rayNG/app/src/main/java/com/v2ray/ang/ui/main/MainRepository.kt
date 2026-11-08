@@ -122,6 +122,13 @@ class MainRepository(
     override fun getDoubleColumnDisplay(): Boolean =
         MmkvManager.decodeSettingsBool(AppConfig.PREF_DOUBLE_COLUMN_DISPLAY, false)
 
+    override fun isSortByPingEnabled(): Boolean =
+        MmkvManager.decodeSettingsBool(AppConfig.PREF_SORT_BY_PING, false)
+
+    override fun setSortByPingEnabled(enabled: Boolean) {
+        MmkvManager.encodeSettings(AppConfig.PREF_SORT_BY_PING, enabled)
+    }
+
     override fun isGroupAllDisplayEnabled(): Boolean = false
 
     override fun getString(resId: Int): String = localizedContext.getString(resId)

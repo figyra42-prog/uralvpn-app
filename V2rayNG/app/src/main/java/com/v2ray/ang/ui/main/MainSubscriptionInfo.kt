@@ -90,6 +90,8 @@ internal fun SubscriptionInfoCard(
     onOpenLink: (String) -> Unit,
     onRefresh: () -> Unit,
     onPing: () -> Unit,
+    sortByPing: Boolean,
+    onToggleSortByPing: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val model = remember(info) { buildSubscriptionInfoUiModel(info, System.currentTimeMillis()) }
@@ -141,6 +143,18 @@ internal fun SubscriptionInfoCard(
                     contentDescription = stringResource(R.string.title_real_ping_all_server),
                     onClick = onPing,
                 )
+                IconButton(
+                    onClick = onToggleSortByPing,
+                    modifier = Modifier.size(32.dp),
+                ) {
+                    Icon(
+                        painterResource(R.drawable.ic_sort_24dp),
+                        stringResource(R.string.sub_info_sort_by_ping),
+                        Modifier.size(20.dp),
+                        tint = if (sortByPing) MaterialTheme.colorScheme.primary
+                        else MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
             }
 
             // One semantics node for the read-only figures so TalkBack reads them in one go.
