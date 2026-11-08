@@ -202,7 +202,7 @@ fun MainScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 16.dp, bottom = 8.dp),
+                        .padding(top = 16.dp, bottom = 0.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     ConnectButton(
