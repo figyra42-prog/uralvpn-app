@@ -141,7 +141,7 @@ fun GroupPagerPage(
                 fallbackTitle = groupTitle,
                 onOpenLink = onOpenLink,
                 onRefresh = { mainViewModel.onAction(MainAction.UpdateGroupSubscription(groupId)) },
-                onPing = { mainViewModel.onAction(MainAction.TestAllServers) },
+                onPing = { mainViewModel.onAction(MainAction.TestRealAllServers) },
                 modifier = Modifier
                     .align(Alignment.TopCenter)
                     .onSizeChanged { infoHeightPx = it.height }
@@ -338,10 +338,10 @@ private fun ServerListItem(
     doubleColumnDisplay: Boolean,
     actions: ServerRowActions
 ) {
-    val testResult = if (row.testDelayMillis == 0L) {
-        ""
-    } else {
-        stringResource(R.string.server_test_delay_value, row.testDelayMillis)
+    val testResult = when {
+        row.testDelayMillis > 0L -> stringResource(R.string.server_test_delay_value, row.testDelayMillis)
+        row.testDelayMillis < 0L -> stringResource(R.string.server_test_delay_na)
+        else -> ""
     }
     val selectedStateDescription = if (isSelected) {
         stringResource(R.string.acc_selected_server)
@@ -388,8 +388,8 @@ private fun ServerListItem(
         if (flag.isNotEmpty()) {
             Text(
                 flag,
-                fontSize = 46.sp,
-                lineHeight = 50.sp,
+                fontSize = 44.sp,
+                lineHeight = 48.sp,
                 modifier = Modifier
                     .padding(start = 8.dp)
                     .clip(RoundedCornerShape(21.dp)),

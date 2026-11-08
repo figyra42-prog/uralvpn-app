@@ -138,7 +138,7 @@ internal fun SubscriptionInfoCard(
                 )
                 CardIconButton(
                     iconRes = R.drawable.ic_flash_on_24dp,
-                    contentDescription = stringResource(R.string.title_ping_all_server),
+                    contentDescription = stringResource(R.string.title_real_ping_all_server),
                     onClick = onPing,
                 )
             }
@@ -181,7 +181,7 @@ private fun StatsRow(model: SubscriptionInfoUiModel) {
     val totalText = if (model.totalBytes > 0L) {
         model.totalBytes.toTrafficString()
     } else {
-        stringResource(R.string.sub_info_unlimited)
+        NO_EXPIRY_SYMBOL
     }
     // Figures and the slash between them always read left to right, also in right-to-left languages;
     // otherwise the bidi algorithm swaps "used / total" around the slash.
