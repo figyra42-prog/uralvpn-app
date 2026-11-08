@@ -25,8 +25,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.PagerState
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,7 +38,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
@@ -391,8 +388,8 @@ private fun ServerListItem(
             if (flag.isNotEmpty()) {
                 Text(
                     flag,
-                    fontSize = 40.sp,
-                    lineHeight = 44.sp,
+                    fontSize = 80.sp,
+                    lineHeight = 88.sp,
                 )
             }
         }
@@ -414,41 +411,24 @@ private fun ServerListItem(
                     overflow = TextOverflow.Ellipsis
                 )
             }
-            if (testResult.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    testResult,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = if (row.testDelayMillis < 0L) colorPingRed else colorPing,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-            }
         }
 
-        if (doubleColumnDisplay) {
-            IconButton(onClick = { actions.more(row.guid, row.profile) }, Modifier.size(40.dp)) {
-                Icon(
-                    painterResource(R.drawable.ic_more_vert_24dp),
-                    stringResource(R.string.acc_more),
-                    Modifier.size(24.dp)
-                )
-            }
-        } else {
-            IconButton(onClick = { actions.edit(row.guid, row.profile) }, Modifier.size(40.dp)) {
-                Icon(
-                    painterResource(R.drawable.ic_edit_24dp),
-                    stringResource(R.string.acc_edit),
-                    Modifier.size(24.dp)
-                )
-            }
-            IconButton(onClick = { actions.remove(row.guid, row.remarks) }, Modifier.size(40.dp)) {
-                Icon(
-                    painterResource(R.drawable.ic_delete_24dp),
-                    stringResource(R.string.acc_delete),
-                    Modifier.size(24.dp)
-                )
-            }
+        Box(
+            Modifier
+                .fillMaxHeight()
+                .padding(end = 12.dp),
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(
+                text = if (testResult.isNotEmpty()) testResult else "—",
+                style = MaterialTheme.typography.bodySmall,
+                color = when {
+                    row.testDelayMillis < 0L -> colorPingRed
+                    row.testDelayMillis > 0L -> colorPing
+                    else -> MaterialTheme.colorScheme.onSurfaceVariant
+                },
+                maxLines = 1,
+            )
         }
     }
 }
