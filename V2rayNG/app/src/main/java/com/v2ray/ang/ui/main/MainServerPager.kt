@@ -38,6 +38,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
@@ -149,6 +151,22 @@ fun GroupPagerPage(
                 modifier = Modifier
                     .align(Alignment.TopCenter)
                     .onSizeChanged { infoHeightPx = it.height }
+            )
+            // Fade just below the card so the list items disappear under it gradually.
+            Box(
+                Modifier
+                    .align(Alignment.TopCenter)
+                    .padding(top = with(density) { infoHeightPx.toDp() })
+                    .fillMaxWidth()
+                    .height(56.dp)
+                    .background(
+                        Brush.verticalGradient(
+                            colors = listOf(
+                                MaterialTheme.colorScheme.surfaceContainerHighest,
+                                Color.Transparent,
+                            )
+                        )
+                    )
             )
         }
     }

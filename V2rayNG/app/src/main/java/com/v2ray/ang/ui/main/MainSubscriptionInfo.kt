@@ -26,6 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -37,7 +38,7 @@ import com.v2ray.ang.util.Utils
 
 private const val MILLIS_PER_SECOND = 1000L
 private const val EXPIRY_DATE_PATTERN = "yyyy-MM-dd"
-private const val NO_EXPIRY_SYMBOL = "\u221E"
+private const val NO_EXPIRY_SYMBOL = "∞"
 private const val CARD_ALPHA = 0.97f
 
 /** Locale-neutral values the subscription information box renders. */
@@ -46,9 +47,9 @@ internal data class SubscriptionInfoUiModel(
     val usedBytes: Long,
     /** Traffic quota in bytes; 0 means unlimited. */
     val totalBytes: Long,
-    /** Bytes downloaded, shown separately like Happ does. */
+    /** Bytes downloaded. */
     val downloadBytes: Long,
-    /** Bytes uploaded, shown separately like Happ does. */
+    /** Bytes uploaded. */
     val uploadBytes: Long,
     /** Used share of the quota in 0..1; null when the quota is unlimited. */
     val trafficFraction: Float?,
@@ -187,14 +188,14 @@ internal fun SubscriptionInfoCard(
                         trackColor = MaterialTheme.colorScheme.surfaceVariant,
                     )
                 }
-                Spacer(Modifier.height(2.dp))
-                TrafficDetailRow(model)
                 model.announce?.let { announce ->
                     Spacer(Modifier.height(4.dp))
                     Text(
                         text = announce,
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth(),
                     )
                 }
             }
@@ -236,27 +237,6 @@ private fun StatsRow(model: SubscriptionInfoUiModel) {
             } ?: stringResource(R.string.sub_info_expiry, NO_EXPIRY_SYMBOL),
             style = figuresStyle,
             color = if (model.expired) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
-            maxLines = 1,
-        )
-    }
-}
-
-@Composable
-private fun TrafficDetailRow(model: SubscriptionInfoUiModel) {
-    // Down/up arrows and figures always read left to right, like the traffic row above.
-    val figuresStyle = MaterialTheme.typography.bodySmall.copy(textDirection = TextDirection.Ltr)
-    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-        Text(
-            text = stringResource(R.string.sub_info_download, model.downloadBytes.toTrafficString()),
-            style = figuresStyle,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            maxLines = 1,
-        )
-        Spacer(Modifier.size(8.dp))
-        Text(
-            text = stringResource(R.string.sub_info_upload, model.uploadBytes.toTrafficString()),
-            style = figuresStyle,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
             maxLines = 1,
         )
     }
