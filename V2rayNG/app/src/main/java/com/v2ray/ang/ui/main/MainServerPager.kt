@@ -65,6 +65,8 @@ import sh.calvin.reorderable.rememberReorderableLazyGridState
 import sh.calvin.reorderable.rememberReorderableLazyListState
 import kotlin.math.abs
 
+private val FADE_HEIGHT = 40.dp
+
 @Composable
 fun GroupPagerPage(
     groupId: String,
@@ -116,7 +118,7 @@ fun GroupPagerPage(
     } else {
         PaddingValues(
             start = contentPadding.calculateStartPadding(layoutDirection),
-            top = contentPadding.calculateTopPadding() + with(density) { infoHeightPx.toDp() },
+            top = contentPadding.calculateTopPadding() + with(density) { infoHeightPx.toDp() + FADE_HEIGHT },
             end = contentPadding.calculateEndPadding(layoutDirection),
             bottom = contentPadding.calculateBottomPadding()
         )
@@ -158,7 +160,7 @@ fun GroupPagerPage(
                     .align(Alignment.TopCenter)
                     .padding(top = with(density) { infoHeightPx.toDp() })
                     .fillMaxWidth()
-                    .height(56.dp)
+                    .height(FADE_HEIGHT)
                     .background(
                         Brush.verticalGradient(
                             colors = listOf(

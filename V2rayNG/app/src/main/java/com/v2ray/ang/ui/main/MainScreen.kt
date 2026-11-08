@@ -209,7 +209,7 @@ fun MainScreen(
                         isRunning = isRunning,
                         onClick = { onAction(MainAction.ToggleService) },
                     )
-                    Spacer(modifier = Modifier.height(20.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
                     Text(
                         text = displayText,
                         style = MaterialTheme.typography.titleMedium,
