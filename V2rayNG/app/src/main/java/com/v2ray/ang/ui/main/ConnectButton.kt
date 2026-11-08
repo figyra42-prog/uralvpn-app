@@ -36,14 +36,14 @@ fun ConnectButton(
     val backgroundBrush = if (isRunning) {
         Brush.radialGradient(
             colors = listOf(Color(0xFFF7FFCC), colorFabActive, Color(0xFF4E7A12)),
-            center = Offset(0.30f, 0.20f),
-            radius = 2.0f,
+            center = Offset(0.5f, 0.5f),
+            radius = 1.0f,
         )
     } else {
         Brush.radialGradient(
-            colors = listOf(Color(0xFF5E5D68), Color(0xFF2A292F), Color(0xFF050508)),
-            center = Offset(0.30f, 0.20f),
-            radius = 2.0f,
+            colors = listOf(Color(0xFF6E6D78), Color(0xFF2A292F), Color(0xFF050508)),
+            center = Offset(0.5f, 0.5f),
+            radius = 1.0f,
         )
     }
     val description = stringResource(if (isRunning) R.string.acc_stop else R.string.acc_start)
@@ -63,7 +63,7 @@ fun ConnectButton(
                     spotColor = Color.Black.copy(alpha = 0.45f),
                 )
                 .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+                .background(MaterialTheme.colorScheme.surfaceContainerHighest)
                 .border(1.dp, MaterialTheme.colorScheme.outlineVariant, CircleShape),
         )
 

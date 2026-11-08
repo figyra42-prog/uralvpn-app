@@ -33,7 +33,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
@@ -386,9 +388,11 @@ private fun ServerListItem(
         if (flag.isNotEmpty()) {
             Text(
                 flag,
-                fontSize = 48.sp,
-                lineHeight = 52.sp,
-                modifier = Modifier.padding(start = 8.dp),
+                fontSize = 46.sp,
+                lineHeight = 50.sp,
+                modifier = Modifier
+                    .padding(start = 8.dp)
+                    .clip(RoundedCornerShape(4.dp)),
             )
         }
         Spacer(modifier = Modifier.width(10.dp))
