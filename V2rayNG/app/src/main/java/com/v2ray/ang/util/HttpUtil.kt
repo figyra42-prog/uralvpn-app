@@ -1,9 +1,11 @@
 package com.v2ray.ang.util
 
+import android.os.Build
 import com.v2ray.ang.AppConfig
 import com.v2ray.ang.AppConfig.LOOPBACK
 import com.v2ray.ang.BuildConfig
 import com.v2ray.ang.dto.UrlContentRequest
+import com.v2ray.ang.handler.MmkvManager
 import okhttp3.Credentials
 import okhttp3.Headers
 import okhttp3.OkHttpClient
@@ -18,9 +20,22 @@ import java.net.MalformedURLException
 import java.net.Proxy
 import java.net.URI
 import java.net.URL
+import java.util.UUID
 import java.util.concurrent.TimeUnit
 
 object HttpUtil {
+
+    /**
+     * Returns a stable per-install hardware ID (HWID) used by Remnawave-style
+     * subscription panels for device-limit checks.
+     */
+    private fun getOrCreateHwid(): String {
+        val existing = MmkvManager.decodeSettingsString(AppConfig.PREF_HWID)
+        if (!existing.isNullOrEmpty()) return existing
+        val hwid = UUID.randomUUID().toString()
+        MmkvManager.encodeSettings(AppConfig.PREF_HWID, hwid)
+        return hwid
+    }
 
     /**
      * Converts the domain part of a URL string to its IDN (Punycode, ASCII Compatible Encoding) format.
@@ -166,6 +181,10 @@ object HttpUtil {
                 .get()
                 .header("User-agent", finalUserAgent)
                 .header("Connection", "close")
+                .header("x-hwid", getOrCreateHwid())
+                .header("x-device-os", "Android")
+                .header("x-ver-os", Build.VERSION.RELEASE)
+                .header("x-device-model", Build.MODEL)
 
             applyEmbeddedBasicAuthHeader(currentUrl, requestBuilder)
 
