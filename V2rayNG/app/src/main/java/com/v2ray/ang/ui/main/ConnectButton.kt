@@ -37,13 +37,11 @@ fun ConnectButton(
         Brush.radialGradient(
             colors = listOf(Color(0xFFF7FFCC), colorFabActive, Color(0xFF4E7A12)),
             center = Offset(0.5f, 0.5f),
-            radius = 1.0f,
         )
     } else {
         Brush.radialGradient(
             colors = listOf(Color(0xFF6E6D78), Color(0xFF2A292F), Color(0xFF050508)),
             center = Offset(0.5f, 0.5f),
-            radius = 1.0f,
         )
     }
     val description = stringResource(if (isRunning) R.string.acc_stop else R.string.acc_start)

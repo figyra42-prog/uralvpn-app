@@ -100,7 +100,7 @@ internal fun SubscriptionInfoCard(
             .padding(horizontal = 12.dp, vertical = 4.dp),
         shape = MaterialTheme.shapes.medium,
         // Almost opaque: the list scrolls underneath without showing through readably.
-        color = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = CARD_ALPHA),
+        color = MaterialTheme.colorScheme.surfaceContainerHighest.copy(alpha = CARD_ALPHA),
         border = BorderStroke(0.5.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)),
     ) {
         Column(Modifier.padding(start = 16.dp, end = 8.dp, top = 2.dp, bottom = 10.dp)) {
