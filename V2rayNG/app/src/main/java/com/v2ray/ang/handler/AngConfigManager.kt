@@ -22,6 +22,7 @@ import com.v2ray.ang.fmt.V2rayNFmt
 import com.v2ray.ang.fmt.VlessFmt
 import com.v2ray.ang.fmt.VmessFmt
 import com.v2ray.ang.fmt.WireguardFmt
+import com.v2ray.ang.fmt.XrayJsonFmt
 import com.v2ray.ang.util.HttpUtil
 import com.v2ray.ang.util.JsonUtil
 import com.v2ray.ang.util.LogUtil
@@ -608,9 +609,44 @@ object AngConfigManager {
             count = parseBatchConfig(server, subid, append)
         }
         if (count <= 0) {
+            count = parseXrayJsonSub(server, subid, append)
+        }
+        if (count <= 0) {
             count = parseCustomConfigServer(server, subid, append)
         }
         return count
+    }
+
+    /**
+     * Parses a raw Xray JSON subscription (Remnawave) into individual VLESS servers.
+     *
+     * @param server The raw subscription JSON.
+     * @param subid The subscription ID.
+     * @param append Whether to append the configurations.
+     * @return The number of configurations parsed.
+     */
+    private fun parseXrayJsonSub(server: String?, subid: String, append: Boolean): Int {
+        if (server == null || !XrayJsonFmt.looksLikeXrayJson(server)) {
+            return 0
+        }
+        return try {
+            val profiles = XrayJsonFmt.parseXrayJsonSubscription(server)
+            if (profiles.isEmpty()) {
+                return 0
+            }
+            val parsed = profiles.map { profile ->
+                profile.subscriptionId = subid
+                profile.description = generateDescription(profile)
+                ParsedProfile(profile)
+            }
+            commitProfiles(parsed, subid, append)
+            parsed.size
+        } catch (e: ProfileStorageException) {
+            throw e
+        } catch (e: Exception) {
+            LogUtil.e(AppConfig.TAG, "Failed to parse Xray JSON subscription", e)
+            0
+        }
     }
 
     /**
