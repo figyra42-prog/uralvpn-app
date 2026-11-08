@@ -35,12 +35,12 @@ fun ConnectButton(
 ) {
     val backgroundBrush = if (isRunning) {
         Brush.radialGradient(
-            colors = listOf(Color(0xFFF7FFCC), colorFabActive, Color(0xFF4E7A12)),
+            colors = listOf(Color(0xFFE8FF8C), Color(0xFF4E7A12)),
             center = Offset(0.5f, 0.5f),
         )
     } else {
         Brush.radialGradient(
-            colors = listOf(Color(0xFF6E6D78), Color(0xFF2A292F), Color(0xFF050508)),
+            colors = listOf(Color(0xFF7A7985), Color(0xFF050508)),
             center = Offset(0.5f, 0.5f),
         )
     }

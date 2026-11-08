@@ -392,7 +392,7 @@ private fun ServerListItem(
                 lineHeight = 50.sp,
                 modifier = Modifier
                     .padding(start = 8.dp)
-                    .clip(RoundedCornerShape(7.dp)),
+                    .clip(RoundedCornerShape(21.dp)),
             )
         }
         Spacer(modifier = Modifier.width(10.dp))
