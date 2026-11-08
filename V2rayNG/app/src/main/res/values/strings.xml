@@ -567,5 +567,6 @@
     <string name="sub_info_traffic" translatable="false">%1$s / %2$s</string>
     <string name="sub_info_unlimited">Unlimited</string>
     <string name="sub_info_sort_by_ping">Sort servers by ping</string>
+    <string name="sub_info_expiry">Subscription until: %1$s</string>
 
 </resources>

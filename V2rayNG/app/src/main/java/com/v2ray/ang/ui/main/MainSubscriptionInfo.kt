@@ -212,7 +212,9 @@ private fun StatsRow(model: SubscriptionInfoUiModel) {
         Spacer(Modifier.size(8.dp))
         Text(
             // No expiry date means the subscription never expires.
-            text = model.expireMillis?.let { Utils.formatTimestamp(it, EXPIRY_DATE_PATTERN) } ?: NO_EXPIRY_SYMBOL,
+            text = model.expireMillis?.let {
+                stringResource(R.string.sub_info_expiry, Utils.formatTimestamp(it, EXPIRY_DATE_PATTERN))
+            } ?: stringResource(R.string.sub_info_expiry, NO_EXPIRY_SYMBOL),
             style = figuresStyle,
             color = if (model.expired) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
             maxLines = 1,
