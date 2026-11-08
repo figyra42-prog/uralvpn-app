@@ -6,19 +6,19 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.v2ray.ang.R
 import com.v2ray.ang.ui.compose.colorFabActive
 
@@ -36,18 +36,13 @@ fun ConnectButton(
     } else {
         MaterialTheme.colorScheme.surfaceContainerHigh
     }
-    val iconTint = if (isRunning) {
-        MaterialTheme.colorScheme.onPrimary
-    } else {
-        MaterialTheme.colorScheme.primary
-    }
     val description = stringResource(if (isRunning) R.string.acc_stop else R.string.acc_start)
 
     Box(
         modifier = modifier
             .size(160.dp)
             .shadow(
-                elevation = if (isRunning) 24.dp else 12.dp,
+                elevation = if (isRunning) 28.dp else 12.dp,
                 shape = CircleShape,
                 ambientColor = if (isRunning) colorFabActive else Color.Black,
                 spotColor = if (isRunning) colorFabActive else Color.Black,
@@ -65,13 +60,9 @@ fun ConnectButton(
             .clickable(onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
-        Icon(
-            painter = painterResource(
-                if (isRunning) R.drawable.ic_stop_24dp else R.drawable.ic_play_24dp
-            ),
-            contentDescription = null,
-            tint = iconTint,
-            modifier = Modifier.size(72.dp),
+        Text(
+            text = "🏔",
+            fontSize = 60.sp,
         )
     }
 }

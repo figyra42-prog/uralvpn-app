@@ -358,7 +358,8 @@ private fun ServerListItem(
                     stateDescription = selectedStateDescription
                 }
             }
-            .clickable { actions.select(row.guid) }
+            .clickable { actions.select(row.guid) },
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(
             Modifier
@@ -379,19 +380,13 @@ private fun ServerListItem(
             }
         }
 
-        Box(
-            Modifier
-                .fillMaxHeight()
-                .padding(start = 4.dp),
-            contentAlignment = Alignment.Center,
-        ) {
-            if (flag.isNotEmpty()) {
-                Text(
-                    flag,
-                    fontSize = 80.sp,
-                    lineHeight = 88.sp,
-                )
-            }
+        if (flag.isNotEmpty()) {
+            Text(
+                flag,
+                fontSize = 64.sp,
+                lineHeight = 68.sp,
+                modifier = Modifier.padding(start = 8.dp),
+            )
         }
         Spacer(modifier = Modifier.width(10.dp))
 
