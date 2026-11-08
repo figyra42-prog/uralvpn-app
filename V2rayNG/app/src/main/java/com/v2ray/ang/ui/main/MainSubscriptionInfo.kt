@@ -57,6 +57,8 @@ internal data class SubscriptionInfoUiModel(
     val expired: Boolean,
     val supportUrl: String?,
     val webPageUrl: String?,
+    /** Panel status message (Remnawave `announce` header), may be multi-line. */
+    val announce: String?,
 ) {
     val trafficLow: Boolean get() = trafficFraction != null && trafficFraction >= TRAFFIC_WARNING_FRACTION
 
@@ -82,6 +84,7 @@ internal fun buildSubscriptionInfoUiModel(
         expired = expireMillis != null && expireMillis <= nowMillis,
         supportUrl = info.supportUrl,
         webPageUrl = info.webPageUrl,
+        announce = info.announce,
     )
 }
 
@@ -186,6 +189,14 @@ internal fun SubscriptionInfoCard(
                 }
                 Spacer(Modifier.height(2.dp))
                 TrafficDetailRow(model)
+                model.announce?.let { announce ->
+                    Spacer(Modifier.height(4.dp))
+                    Text(
+                        text = announce,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
             }
         }
     }

@@ -499,6 +499,7 @@ object AngConfigManager {
                     profileTitle = headers["Profile-Title"],
                     supportUrl = headers["Support-Url"],
                     webPageUrl = headers["Profile-Web-Page-Url"],
+                    announce = headers["announce"],
                 )
             }
 

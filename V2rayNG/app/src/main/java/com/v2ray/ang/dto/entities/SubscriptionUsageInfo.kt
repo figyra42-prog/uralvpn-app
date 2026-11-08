@@ -22,6 +22,8 @@ data class SubscriptionUsageInfo(
     val supportUrl: String? = null,
     /** Validated `Profile-Web-Page-Url` header. */
     val webPageUrl: String? = null,
+    /** Decoded `announce` header (Remnawave status message, may be multi-line). */
+    val announce: String? = null,
 ) {
     /** Bytes consumed so far (upload + download). */
     val used: Long get() = upload + download

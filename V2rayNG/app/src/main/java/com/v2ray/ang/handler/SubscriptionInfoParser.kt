@@ -22,6 +22,7 @@ object SubscriptionInfoParser {
     private const val BASE64_PREFIX = "base64:"
     private const val MAX_TITLE_LENGTH = 100
     private const val MAX_URL_LENGTH = 2048
+    private const val MAX_ANNOUNCE_LENGTH = 1000
 
     /** Values at or above this are epoch milliseconds, not seconds (year 5138 in seconds). */
     private const val MILLIS_THRESHOLD = 100_000_000_000L
@@ -40,13 +41,15 @@ object SubscriptionInfoParser {
         supportUrl: String?,
         webPageUrl: String?,
         decodeBase64: (String) -> String = Utils::decode,
+        announce: String? = null,
     ): SubscriptionUsageInfo? {
         val fields = parseUserInfoFields(userInfo)
         val title = decodeTitle(profileTitle, decodeBase64)
         val support = sanitizeLink(supportUrl)
         val webPage = sanitizeLink(webPageUrl)
+        val announceText = decodeAnnounce(announce, decodeBase64)
 
-        if (fields == null && title == null && support == null && webPage == null) return null
+        if (fields == null && title == null && support == null && webPage == null && announceText == null) return null
 
         return SubscriptionUsageInfo(
             upload = fields?.get("upload") ?: 0,
@@ -56,6 +59,7 @@ object SubscriptionInfoParser {
             title = title,
             supportUrl = support,
             webPageUrl = webPage,
+            announce = announceText,
         )
     }
 
@@ -117,5 +121,16 @@ object SubscriptionInfoParser {
             else -> value
         }
         return decoded.trim().take(MAX_TITLE_LENGTH).ifEmpty { null }
+    }
+
+    private fun decodeAnnounce(raw: String?, decodeBase64: (String) -> String): String? {
+        val value = raw?.trim().orEmpty()
+        if (value.isEmpty()) return null
+        val decoded = if (value.startsWith(BASE64_PREFIX, ignoreCase = true)) {
+            decodeBase64(value.substring(BASE64_PREFIX.length).trim())
+        } else {
+            value
+        }
+        return decoded.trim().take(MAX_ANNOUNCE_LENGTH).ifEmpty { null }
     }
 }

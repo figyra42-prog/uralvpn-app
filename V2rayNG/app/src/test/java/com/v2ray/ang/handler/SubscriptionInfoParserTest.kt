@@ -16,7 +16,8 @@ class SubscriptionInfoParserTest {
         title: String? = null,
         support: String? = null,
         web: String? = null,
-    ) = SubscriptionInfoParser.parse(userInfo, title, support, web, decode)
+        announce: String? = null,
+    ) = SubscriptionInfoParser.parse(userInfo, title, support, web, decode, announce)
 
     @Test
     fun noHeadersGivesNull() {
@@ -59,6 +60,14 @@ class SubscriptionInfoParserTest {
         assertEquals("اشتراک من", parse(title = "base64:$b64")!!.title)
         assertEquals("My Plan", parse(title = "My Plan")!!.title)
         assertEquals("My Plan", parse(title = "My%20Plan")!!.title)
+    }
+
+    @Test
+    fun decodesPlainAndBase64Announce() {
+        val b64 = Base64.getEncoder().encodeToString("СТАТУС ✅\nОсталось: 25 дн.".toByteArray())
+        assertEquals("СТАТУС ✅\nОсталось: 25 дн.", parse(announce = "base64:$b64")!!.announce)
+        assertEquals("АКТИВНА", parse(announce = "АКТИВНА")!!.announce)
+        assertNull(parse(announce = "  ")?.announce)
     }
 
     @Test
