@@ -1,5 +1,6 @@
 package com.v2ray.ang.handler
 
+import android.content.Context
 import android.os.Build
 import com.v2ray.ang.AppConfig
 import com.v2ray.ang.BuildConfig
@@ -12,6 +13,7 @@ import com.v2ray.ang.util.JsonUtil
 import com.v2ray.ang.util.LogUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.io.File
 
 object UpdateCheckerManager {
     suspend fun checkForUpdate(includePreRelease: Boolean = false): CheckUpdateResult = withContext(Dispatchers.IO) {
@@ -85,6 +87,23 @@ object UpdateCheckerManager {
             if (num1 != num2) return num1 - num2
         }
         return 0
+    }
+
+    /**
+     * Downloads the update APK into the app cache and returns the file.
+     *
+     * @param context The application context.
+     * @param url The APK download URL.
+     * @return The downloaded APK file.
+     */
+    suspend fun downloadUpdate(context: Context, url: String): File = withContext(Dispatchers.IO) {
+        val targetFile = File(context.cacheDir, "uralvpn_update.apk")
+        val ok = HttpUtil.downloadToFile(
+            UrlContentRequest(url = url, timeout = 60_000),
+            targetFile
+        )
+        if (!ok) throw IllegalStateException("Failed to download APK")
+        targetFile
     }
 
     private fun getDownloadUrl(release: GitHubRelease, abi: String): String {

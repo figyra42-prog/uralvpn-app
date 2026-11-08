@@ -1,7 +1,9 @@
 package com.v2ray.ang.ui.checkupdate
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.core.content.FileProvider
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,6 +17,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -31,7 +34,6 @@ import com.v2ray.ang.ui.compose.SettingsMenuItem
 import com.v2ray.ang.ui.compose.SettingsSwitchItem
 import com.v2ray.ang.ui.compose.VersionInfoBlock
 import com.v2ray.ang.ui.compose.verticalScrollbar
-import com.v2ray.ang.util.Utils
 
 class CheckUpdateActivity : BaseComponentActivity() {
 
@@ -61,6 +63,7 @@ fun CheckUpdateScreen(
     val checkPreRelease by viewModel.checkPreRelease.collectAsStateWithLifecycle()
     val showUpdateDialog by viewModel.showUpdateDialog.collectAsStateWithLifecycle()
     val updateResult by viewModel.updateResult.collectAsStateWithLifecycle()
+    val downloadedApk by viewModel.downloadedApk.collectAsStateWithLifecycle()
 
     val libVersion = CoreNativeManager.getLibVersion()
     val versionText = "v${BuildConfig.VERSION_NAME} ($libVersion)"
@@ -97,6 +100,17 @@ fun CheckUpdateScreen(
         }
     }
 
+    LaunchedEffect(downloadedApk) {
+        val apk = downloadedApk ?: return@LaunchedEffect
+        val uri = FileProvider.getUriForFile(context, "${context.packageName}.cache", apk)
+        val installIntent = Intent(Intent.ACTION_VIEW).apply {
+            setDataAndType(uri, "application/vnd.android.package-archive")
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+        runCatching { context.startActivity(installIntent) }
+        viewModel.consumeDownloadedApk()
+    }
+
     if (showUpdateDialog && updateResult != null) {
         val result = updateResult!!
         AlertDialog(
@@ -115,7 +129,7 @@ fun CheckUpdateScreen(
             confirmButton = {
                 TextButton(onClick = {
                     viewModel.dismissUpdateDialog()
-                    result.downloadUrl?.let { Utils.openUri(context, it) }
+                    viewModel.downloadUpdate()
                 }) {
                     Text(stringResource(R.string.update_now))
                 }

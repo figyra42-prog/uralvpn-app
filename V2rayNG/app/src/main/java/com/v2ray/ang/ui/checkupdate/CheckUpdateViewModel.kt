@@ -11,6 +11,7 @@ import com.v2ray.ang.util.LogUtil
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import java.io.File
 
 class CheckUpdateViewModel(application: Application) : BaseViewModel(application) {
 
@@ -24,6 +25,9 @@ class CheckUpdateViewModel(application: Application) : BaseViewModel(application
 
     private val _showUpdateDialog = MutableStateFlow(false)
     val showUpdateDialog: StateFlow<Boolean> = _showUpdateDialog.asStateFlow()
+
+    private val _downloadedApk = MutableStateFlow<File?>(null)
+    val downloadedApk: StateFlow<File?> = _downloadedApk.asStateFlow()
 
     fun toggleCheckPreRelease(enabled: Boolean) {
         _checkPreRelease.value = enabled
@@ -49,5 +53,22 @@ class CheckUpdateViewModel(application: Application) : BaseViewModel(application
 
     fun dismissUpdateDialog() {
         _showUpdateDialog.value = false
+    }
+
+    fun downloadUpdate() {
+        val downloadUrl = _updateResult.value?.downloadUrl ?: return
+        launchLoading {
+            try {
+                val file = UpdateCheckerManager.downloadUpdate(app, downloadUrl)
+                _downloadedApk.value = file
+            } catch (e: Exception) {
+                LogUtil.e(AppConfig.TAG, "Failed to download update", e)
+                toastError(R.string.toast_failure)
+            }
+        }
+    }
+
+    fun consumeDownloadedApk() {
+        _downloadedApk.value = null
     }
 }
