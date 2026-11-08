@@ -212,7 +212,7 @@ fun MainScreen(
                     Spacer(modifier = Modifier.height(2.dp))
                     Text(
                         text = displayText,
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier
                             .clickable { onAction(MainAction.TestCurrentServer) },
