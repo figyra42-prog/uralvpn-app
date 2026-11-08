@@ -346,10 +346,12 @@ private fun ServerListItem(
     } else {
         null
     }
-    val flag = row.remarks.take(2).takeIf {
-        it.length == 2 && it[0].code in 0x1F1E6..0x1F1FF && it[1].code in 0x1F1E6..0x1F1FF
+    val flag = row.remarks.take(4).takeIf {
+        it.length >= 4 &&
+            it.codePointAt(0) in 0x1F1E6..0x1F1FF &&
+            it.codePointAt(2) in 0x1F1E6..0x1F1FF
     }.orEmpty()
-    val name = if (flag.isNotEmpty()) row.remarks.substring(2).trimStart() else row.remarks
+    val name = if (flag.isNotEmpty()) row.remarks.substring(4).trimStart() else row.remarks
     Row(
         modifier = Modifier
             .fillMaxWidth()
