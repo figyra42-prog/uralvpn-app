@@ -10,6 +10,7 @@ internal data class ServerRowUiModel(
     val guid: String,
     val profile: ProfileItem,
     val remarks: String,
+    val description: String,
     val statistics: String,
     val typeDescription: String,
     val testDelayMillis: Long,
@@ -30,6 +31,7 @@ internal fun buildServerRowUiModel(
         guid = server.guid,
         profile = profile,
         remarks = profile.remarks,
+        description = profile.serverDescription.orEmpty(),
         statistics = profile.description.nullIfBlank()
             ?: AngConfigManager.generateDescription(profile),
         typeDescription = serverProtocolDescription(profile),

@@ -91,6 +91,7 @@ open class FmtBase {
         config.spiderX = queryParam["spx"]
         config.mldsa65Verify = queryParam["pqv"]
         config.flow = queryParam["flow"]
+        config.serverDescription = queryParam["desc"]
     }
 
     /**

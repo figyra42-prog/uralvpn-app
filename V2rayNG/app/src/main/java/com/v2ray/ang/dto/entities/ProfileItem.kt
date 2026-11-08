@@ -12,6 +12,7 @@ data class ProfileItem(
 
     var remarks: String = "",
     var description: String? = null,
+    var serverDescription: String? = null,
     var server: String? = null,
     var serverPort: String? = null,
 

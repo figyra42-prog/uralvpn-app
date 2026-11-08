@@ -382,61 +382,71 @@ private fun ServerListItem(
             }
         }
 
+        Box(
+            Modifier
+                .fillMaxHeight()
+                .padding(start = 4.dp),
+            contentAlignment = Alignment.Center,
+        ) {
+            if (flag.isNotEmpty()) {
+                Text(
+                    flag,
+                    fontSize = 40.sp,
+                    lineHeight = 44.sp,
+                )
+            }
+        }
+        Spacer(modifier = Modifier.width(10.dp))
+
         Column(
             Modifier
                 .weight(1f)
-                .padding(start = 8.dp, end = 12.dp, top = 8.dp, bottom = 8.dp)
+                .padding(start = 0.dp, end = 4.dp, top = 10.dp, bottom = 10.dp)
         ) {
-            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                if (flag.isNotEmpty()) {
-                    Text(
-                        flag,
-                        fontSize = 30.sp,
-                        lineHeight = 36.sp,
-                    )
-                    Spacer(modifier = Modifier.width(10.dp))
-                }
-                Text(name, Modifier.weight(1f), style = MaterialTheme.typography.bodyLarge.copy(lineBreak = LineBreak.Paragraph), maxLines = 2, overflow = TextOverflow.Ellipsis)
-                if (doubleColumnDisplay) {
-                    IconButton(onClick = { actions.more(row.guid, row.profile) }, Modifier.size(36.dp)) {
-                        Icon(
-                            painterResource(R.drawable.ic_more_vert_24dp),
-                            stringResource(R.string.acc_more),
-                            Modifier.size(24.dp)
-                        )
-                    }
-                } else {
-                    IconButton(onClick = { actions.share(row.guid, row.profile) }, Modifier.size(36.dp)) {
-                        Icon(
-                            painterResource(R.drawable.ic_share_24dp),
-                            stringResource(R.string.title_configuration_share),
-                            Modifier.size(24.dp)
-                        )
-                    }
-                    IconButton(onClick = { actions.edit(row.guid, row.profile) }, Modifier.size(36.dp)) {
-                        Icon(
-                            painterResource(R.drawable.ic_edit_24dp),
-                            stringResource(R.string.acc_edit),
-                            Modifier.size(24.dp)
-                        )
-                    }
-                    IconButton(onClick = { actions.remove(row.guid, row.remarks) }, Modifier.size(36.dp)) {
-                        Icon(
-                            painterResource(R.drawable.ic_delete_24dp),
-                            stringResource(R.string.acc_delete),
-                            Modifier.size(24.dp)
-                        )
-                    }
-                }
+            Text(name, style = MaterialTheme.typography.bodyLarge.copy(lineBreak = LineBreak.Paragraph), maxLines = 2, overflow = TextOverflow.Ellipsis)
+            if (row.description.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    row.description,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
             }
             if (testResult.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(6.dp))
+                Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     testResult,
                     style = MaterialTheme.typography.bodySmall,
                     color = if (row.testDelayMillis < 0L) colorPingRed else colorPing,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
+                )
+            }
+        }
+
+        if (doubleColumnDisplay) {
+            IconButton(onClick = { actions.more(row.guid, row.profile) }, Modifier.size(40.dp)) {
+                Icon(
+                    painterResource(R.drawable.ic_more_vert_24dp),
+                    stringResource(R.string.acc_more),
+                    Modifier.size(24.dp)
+                )
+            }
+        } else {
+            IconButton(onClick = { actions.edit(row.guid, row.profile) }, Modifier.size(40.dp)) {
+                Icon(
+                    painterResource(R.drawable.ic_edit_24dp),
+                    stringResource(R.string.acc_edit),
+                    Modifier.size(24.dp)
+                )
+            }
+            IconButton(onClick = { actions.remove(row.guid, row.remarks) }, Modifier.size(40.dp)) {
+                Icon(
+                    painterResource(R.drawable.ic_delete_24dp),
+                    stringResource(R.string.acc_delete),
+                    Modifier.size(24.dp)
                 )
             }
         }
