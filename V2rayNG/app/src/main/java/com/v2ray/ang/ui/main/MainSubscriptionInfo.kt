@@ -46,6 +46,10 @@ internal data class SubscriptionInfoUiModel(
     val usedBytes: Long,
     /** Traffic quota in bytes; 0 means unlimited. */
     val totalBytes: Long,
+    /** Bytes downloaded, shown separately like Happ does. */
+    val downloadBytes: Long,
+    /** Bytes uploaded, shown separately like Happ does. */
+    val uploadBytes: Long,
     /** Used share of the quota in 0..1; null when the quota is unlimited. */
     val trafficFraction: Float?,
     /** Expiry in epoch milliseconds; null when the subscription never expires. */
@@ -71,6 +75,8 @@ internal fun buildSubscriptionInfoUiModel(
         title = info.title,
         usedBytes = info.used,
         totalBytes = if (unlimited) 0L else info.total,
+        downloadBytes = info.download,
+        uploadBytes = info.upload,
         trafficFraction = if (unlimited) null else (info.used.toDouble() / info.total).toFloat().coerceIn(0f, 1f),
         expireMillis = expireMillis,
         expired = expireMillis != null && expireMillis <= nowMillis,
@@ -178,6 +184,8 @@ internal fun SubscriptionInfoCard(
                         trackColor = MaterialTheme.colorScheme.surfaceVariant,
                     )
                 }
+                Spacer(Modifier.height(2.dp))
+                TrafficDetailRow(model)
             }
         }
     }
@@ -217,6 +225,27 @@ private fun StatsRow(model: SubscriptionInfoUiModel) {
             } ?: stringResource(R.string.sub_info_expiry, NO_EXPIRY_SYMBOL),
             style = figuresStyle,
             color = if (model.expired) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
+            maxLines = 1,
+        )
+    }
+}
+
+@Composable
+private fun TrafficDetailRow(model: SubscriptionInfoUiModel) {
+    // Down/up arrows and figures always read left to right, like the traffic row above.
+    val figuresStyle = MaterialTheme.typography.bodySmall.copy(textDirection = TextDirection.Ltr)
+    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+        Text(
+            text = stringResource(R.string.sub_info_download, model.downloadBytes.toTrafficString()),
+            style = figuresStyle,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            maxLines = 1,
+        )
+        Spacer(Modifier.size(8.dp))
+        Text(
+            text = stringResource(R.string.sub_info_upload, model.uploadBytes.toTrafficString()),
+            style = figuresStyle,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             maxLines = 1,
         )
     }

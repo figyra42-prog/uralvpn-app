@@ -571,5 +571,7 @@
     <string name="sub_info_unlimited">Без ограничений</string>
     <string name="sub_info_sort_by_ping">Сортировать по пингу</string>
     <string name="sub_info_expiry">Подписка до: %1$s</string>
+    <string name="sub_info_download" translatable="false">↓ %1$s</string>
+    <string name="sub_info_upload" translatable="false">↑ %1$s</string>
 
 </resources>
