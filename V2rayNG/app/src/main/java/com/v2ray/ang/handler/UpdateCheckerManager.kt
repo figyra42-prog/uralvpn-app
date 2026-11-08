@@ -7,7 +7,6 @@ import com.v2ray.ang.BuildConfig
 import com.v2ray.ang.dto.CheckUpdateResult
 import com.v2ray.ang.dto.GitHubRelease
 import com.v2ray.ang.dto.UrlContentRequest
-import com.v2ray.ang.extension.concatUrl
 import com.v2ray.ang.util.HttpUtil
 import com.v2ray.ang.util.JsonUtil
 import com.v2ray.ang.util.LogUtil
@@ -17,11 +16,10 @@ import java.io.File
 
 object UpdateCheckerManager {
     suspend fun checkForUpdate(includePreRelease: Boolean = false): CheckUpdateResult = withContext(Dispatchers.IO) {
-        val url = if (includePreRelease) {
-            AppConfig.APP_API_URL
-        } else {
-            AppConfig.APP_API_URL.concatUrl("latest")
-        }
+        // GitHub's /releases/latest only returns stable (non-prerelease) releases and 404s for
+        // a beta repo whose every release is a pre-release. Always read the full list and take
+        // the newest entry, so updates are found even without the pre-release toggle.
+        val url = AppConfig.APP_API_URL
 
         val proxyUsername = SettingsManager.getSocksUsername()
         val proxyPassword = SettingsManager.getSocksPassword()
@@ -46,13 +44,8 @@ object UpdateCheckerManager {
                 ?: throw IllegalStateException("Failed to get response")
         }
 
-        val latestRelease = if (includePreRelease) {
-            JsonUtil.fromJsonSafe(response, Array<GitHubRelease>::class.java)
-                ?.firstOrNull()
-                ?: throw IllegalStateException("No pre-release found")
-        } else {
-            JsonUtil.fromJsonSafe(response, GitHubRelease::class.java)
-        }
+        val latestRelease = JsonUtil.fromJsonSafe(response, Array<GitHubRelease>::class.java)
+            ?.firstOrNull()
         if (latestRelease == null) {
             return@withContext CheckUpdateResult(hasUpdate = false)
         }
@@ -99,7 +92,7 @@ object UpdateCheckerManager {
     suspend fun downloadUpdate(context: Context, url: String): File = withContext(Dispatchers.IO) {
         val targetFile = File(context.cacheDir, "uralvpn_update.apk")
         val ok = HttpUtil.downloadToFile(
-            UrlContentRequest(url = url, timeout = 60_000),
+            UrlContentRequest(url = url, timeout = 300_000),
             targetFile
         )
         if (!ok) throw IllegalStateException("Failed to download APK")

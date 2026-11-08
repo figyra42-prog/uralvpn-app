@@ -34,6 +34,7 @@ import com.v2ray.ang.ui.compose.SettingsMenuItem
 import com.v2ray.ang.ui.compose.SettingsSwitchItem
 import com.v2ray.ang.ui.compose.VersionInfoBlock
 import com.v2ray.ang.ui.compose.verticalScrollbar
+import com.v2ray.ang.util.Utils
 
 class CheckUpdateActivity : BaseComponentActivity() {
 
@@ -106,9 +107,14 @@ fun CheckUpdateScreen(
         val installIntent = Intent(Intent.ACTION_VIEW).apply {
             setDataAndType(uri, "application/vnd.android.package-archive")
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
-        runCatching { context.startActivity(installIntent) }
+        val opened = runCatching { context.startActivity(installIntent) }.isSuccess
         viewModel.consumeDownloadedApk()
+        if (!opened) {
+            // No installer could handle the APK — fall back to the browser download page.
+            updateResult?.downloadUrl?.let { Utils.openUri(context, it) }
+        }
     }
 
     if (showUpdateDialog && updateResult != null) {
