@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -35,10 +36,16 @@ fun ConnectButton(
     modifier: Modifier = Modifier,
 ) {
     val backgroundBrush = if (isRunning) {
-        Brush.linearGradient(listOf(Color(0xFFE6FF7A), colorFabActive))
+        Brush.radialGradient(
+            colors = listOf(Color(0xFFF3FFBF), colorFabActive, Color(0xFF9ED42A)),
+            center = Offset(0.32f, 0.25f),
+            radius = 1.6f,
+        )
     } else {
-        Brush.linearGradient(
-            listOf(Color(0xFF2E2D33), MaterialTheme.colorScheme.surfaceContainerHigh)
+        Brush.radialGradient(
+            colors = listOf(Color(0xFF43424A), Color(0xFF2A292F), Color(0xFF121116)),
+            center = Offset(0.32f, 0.25f),
+            radius = 1.6f,
         )
     }
     val description = stringResource(if (isRunning) R.string.acc_stop else R.string.acc_start)
@@ -47,10 +54,18 @@ fun ConnectButton(
         modifier = modifier
             .size(180.dp)
             .shadow(
-                elevation = if (isRunning) 30.dp else 16.dp,
+                elevation = if (isRunning) 24.dp else 16.dp,
                 shape = CircleShape,
-                ambientColor = if (isRunning) colorFabActive else Color.Black,
-                spotColor = if (isRunning) colorFabActive else Color.Black,
+                ambientColor = if (isRunning) {
+                    colorFabActive.copy(alpha = 0.30f)
+                } else {
+                    Color.Black.copy(alpha = 0.55f)
+                },
+                spotColor = if (isRunning) {
+                    colorFabActive.copy(alpha = 0.30f)
+                } else {
+                    Color.Black.copy(alpha = 0.55f)
+                },
             )
             .clip(CircleShape)
             .background(backgroundBrush)
