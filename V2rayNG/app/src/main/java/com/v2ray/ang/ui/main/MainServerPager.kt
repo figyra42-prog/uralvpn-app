@@ -31,6 +31,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -93,6 +94,9 @@ fun GroupPagerPage(
         mainViewModel.serverGroupState(groupId)
     }
     val groupState by groupStateFlow.collectAsStateWithLifecycle()
+    var collapsed by remember { mutableStateOf(false) }
+    // Collapsed keeps only the first entry (Автопилот) visible.
+    val visibleRows = if (collapsed) groupState.rows.take(1) else groupState.rows
     val canReorder = groupId.isNotEmpty() && searchQuery.isEmpty()
     val actions = remember(
         onSelectServer,
@@ -126,7 +130,7 @@ fun GroupPagerPage(
 
     Box(Modifier.fillMaxSize()) {
         ServerListPage(
-            rows = groupState.rows,
+            rows = visibleRows,
             selectedGuid = selectedGuid,
             locateTarget = locateTarget?.takeIf { it.groupId == groupId },
             canReorder = canReorder,
@@ -150,6 +154,8 @@ fun GroupPagerPage(
                 onPing = { mainViewModel.onAction(MainAction.TestRealAllServers) },
                 sortByPing = sortByPing,
                 onToggleSortByPing = onToggleSortByPing,
+                collapsed = collapsed,
+                onToggleCollapse = { collapsed = !collapsed },
                 modifier = Modifier
                     .align(Alignment.TopCenter)
                     .onSizeChanged { infoHeightPx = it.height }

@@ -21,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
@@ -102,6 +103,8 @@ internal fun SubscriptionInfoCard(
     onPing: () -> Unit,
     sortByPing: Boolean,
     onToggleSortByPing: () -> Unit,
+    collapsed: Boolean,
+    onToggleCollapse: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val model = remember(info) { buildSubscriptionInfoUiModel(info, System.currentTimeMillis()) }
@@ -117,6 +120,18 @@ internal fun SubscriptionInfoCard(
     ) {
         Column(Modifier.padding(start = 16.dp, end = 8.dp, top = 2.dp, bottom = 10.dp)) {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                IconButton(
+                    onClick = onToggleCollapse,
+                    modifier = Modifier.size(32.dp),
+                ) {
+                    Icon(
+                        painterResource(R.drawable.ic_expand_more_24dp),
+                        stringResource(if (collapsed) R.string.sub_info_expand else R.string.sub_info_collapse),
+                        Modifier
+                            .size(20.dp)
+                            .rotate(if (collapsed) 0f else 180f),
+                    )
+                }
                 Text(
                     text = model.title ?: fallbackTitle,
                     modifier = Modifier.weight(1f),
