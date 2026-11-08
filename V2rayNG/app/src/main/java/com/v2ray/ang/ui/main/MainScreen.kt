@@ -179,7 +179,9 @@ fun MainScreen(
                                 .clickable { onAction(MainAction.TestCurrentServer) },
                         )
                     }
-                    val group = groups.firstOrNull()
+                    val group = groups.firstOrNull { it.id == uiState.selectedGroupId }
+                        ?: groups.firstOrNull { it.id.isNotEmpty() }
+                        ?: groups.firstOrNull()
                     if (group != null) {
                         GroupPagerPage(
                             groupId = group.id,
