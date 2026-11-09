@@ -39,7 +39,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
@@ -166,6 +167,22 @@ fun GroupPagerPage(
                     .align(Alignment.TopCenter)
                     .onSizeChanged { infoHeightPx = it.height }
             )
+            // Fade just below the card so the list items disappear under it gradually.
+            Box(
+                Modifier
+                    .align(Alignment.TopCenter)
+                    .padding(top = with(density) { infoHeightPx.toDp() })
+                    .fillMaxWidth()
+                    .height(FADE_HEIGHT)
+                    .background(
+                        Brush.verticalGradient(
+                            colors = listOf(
+                                MaterialTheme.colorScheme.surfaceContainerHighest,
+                                Color.Transparent,
+                            )
+                        )
+                    )
+            )
         }
     }
 }
@@ -249,9 +266,6 @@ private fun ServerListPage(
 
         LocateTargetEffect(locateTarget, rows, listState, onLocateHandled)
 
-        val density = LocalDensity.current
-        val fadeHeightPx = with(density) { FADE_HEIGHT.toPx() }
-
         LazyColumn(
             state = listState,
             modifier = Modifier
@@ -260,45 +274,30 @@ private fun ServerListPage(
             contentPadding = contentPadding
         ) {
             itemsIndexed(items = rows, key = { _, item -> item.guid }) { _, row ->
-                val offsetPx = listState.layoutInfo.visibleItemsInfo
-                    .firstOrNull { it.key == row.guid }
-                    ?.offset ?: Int.MAX_VALUE
-                // offset is relative to the content start (before-content padding excluded),
-                // so the first item sits at 0 and scrolls negative as it goes under the card.
-                val fade = if (fadeHeightPx <= 0f) {
-                    1f
-                } else {
-                    (1f + offsetPx / fadeHeightPx).coerceIn(0f, 1f)
-                }
-                Column(Modifier.graphicsLayer {
-                    alpha = fade
-                    scaleY = 0.96f + 0.04f * fade
-                }) {
-                    if (canReorder && reorderableState != null) {
-                        ReorderableItem(
-                            reorderableState,
-                            key = row.guid
-                        ) { isDragging ->
-                            ReorderableListItem(
-                                scope = this,
-                                isDragging = isDragging
-                            ) {
-                                ServerItemRow(
-                                    row = row,
-                                    isSelected = row.guid == selectedGuid,
-                                    actions = actions
-                                )
-                            }
-                            ItemDivider()
+                if (canReorder && reorderableState != null) {
+                    ReorderableItem(
+                        reorderableState,
+                        key = row.guid
+                    ) { isDragging ->
+                        ReorderableListItem(
+                            scope = this,
+                            isDragging = isDragging
+                        ) {
+                            ServerItemRow(
+                                row = row,
+                                isSelected = row.guid == selectedGuid,
+                                actions = actions
+                            )
                         }
-                    } else {
-                        ServerItemRow(
-                            row = row,
-                            isSelected = row.guid == selectedGuid,
-                            actions = actions
-                        )
                         ItemDivider()
                     }
+                } else {
+                    ServerItemRow(
+                        row = row,
+                        isSelected = row.guid == selectedGuid,
+                        actions = actions
+                    )
+                    ItemDivider()
                 }
             }
         }
