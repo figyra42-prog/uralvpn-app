@@ -133,7 +133,7 @@ object AppConfig {
     const val APP_URL = "https://github.com/figyra42-prog/uralvpn-app"
     const val APP_API_URL = "https://api.github.com/repos/figyra42-prog/uralvpn-app/releases"
     const val APP_WIKI_MODE = "$APP_URL/wiki/Mode"
-    const val FEEDBACK_URL = "https://t.me/uralvpn_mybot"
+    const val FEEDBACK_URL = "https://t.me/Ural_podderzka_bot"
     const val APP_PRIVACY_POLICY = "https://telegra.ph/Politika-konfidencialnosti-10-11-73"
     const val APP_PROMOTION_URL = ""
     const val TG_CHANNEL_URL = "https://t.me/nova_vp_n"
