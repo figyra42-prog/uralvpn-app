@@ -111,8 +111,7 @@ internal fun SubscriptionInfoCard(
 
     Surface(
         modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 12.dp),
+            .fillMaxWidth(),
         shape = MaterialTheme.shapes.medium,
         // Almost opaque: the list scrolls underneath without showing through readably.
         color = MaterialTheme.colorScheme.surfaceContainerHighest.copy(alpha = CARD_ALPHA),

@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.calculateEndPadding
-import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -30,7 +28,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -38,11 +35,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
@@ -65,8 +57,6 @@ import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyGridState
 import sh.calvin.reorderable.rememberReorderableLazyListState
 import kotlin.math.abs
-
-private val FADE_HEIGHT = 14.dp
 
 @Composable
 fun GroupPagerPage(
@@ -120,71 +110,37 @@ fun GroupPagerPage(
             remove = onRemoveServer,
         )
     }
-    // The box floats over the list (the list scrolls underneath it), so the list is padded by the box height.
-    val density = LocalDensity.current
-    val layoutDirection = LocalLayoutDirection.current
-    var infoHeightPx by remember { mutableIntStateOf(0) }
-    val listPadding = if (usageInfo == null) {
-        contentPadding
-    } else {
-        PaddingValues(
-            start = contentPadding.calculateStartPadding(layoutDirection),
-            top = contentPadding.calculateTopPadding() + with(density) { infoHeightPx.toDp() + FADE_HEIGHT },
-            end = contentPadding.calculateEndPadding(layoutDirection),
-            bottom = contentPadding.calculateBottomPadding()
-        )
-    }
-
-    Box(Modifier.fillMaxSize()) {
-        ServerListPage(
-            rows = visibleRows,
-            selectedGuid = selectedGuid,
-            locateTarget = locateTarget?.takeIf { it.groupId == groupId },
-            canReorder = canReorder,
-            doubleColumnDisplay = doubleColumnDisplay,
-            groupId = groupId,
-            lazyListStates = lazyListStates,
-            lazyGridStates = lazyGridStates,
-            actions = actions,
-            onLocateHandled = { mainViewModel.onAction(MainAction.LocateHandled) },
-            onMoveServer = { fromIndex, toIndex ->
-                mainViewModel.moveServer(groupId, fromIndex, toIndex)
-            },
-            contentPadding = listPadding
-        )
-        if (usageInfo != null) {
-            SubscriptionInfoCard(
-                info = usageInfo,
-                fallbackTitle = groupTitle,
-                onOpenLink = onOpenLink,
-                onRefresh = { mainViewModel.onAction(MainAction.UpdateGroupSubscription(groupId)) },
-                onPing = { mainViewModel.onAction(MainAction.TestRealAllServers) },
-                sortByPing = sortByPing,
-                onToggleSortByPing = onToggleSortByPing,
-                collapsed = collapsed,
-                onToggleCollapse = { collapsed = !collapsed },
-                modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .onSizeChanged { infoHeightPx = it.height }
-            )
-            // Fade just below the card so the list items disappear under it gradually.
-            Box(
-                Modifier
-                    .align(Alignment.TopCenter)
-                    .padding(top = with(density) { infoHeightPx.toDp() })
-                    .fillMaxWidth()
-                    .height(FADE_HEIGHT)
-                    .background(
-                        Brush.verticalGradient(
-                            colors = listOf(
-                                MaterialTheme.colorScheme.surfaceContainerHighest,
-                                Color.Transparent,
-                            )
-                        )
-                    )
-            )
-        }
-    }
+    ServerListPage(
+        rows = visibleRows,
+        selectedGuid = selectedGuid,
+        locateTarget = locateTarget?.takeIf { it.groupId == groupId },
+        canReorder = canReorder,
+        doubleColumnDisplay = doubleColumnDisplay,
+        groupId = groupId,
+        lazyListStates = lazyListStates,
+        lazyGridStates = lazyGridStates,
+        actions = actions,
+        onLocateHandled = { mainViewModel.onAction(MainAction.LocateHandled) },
+        onMoveServer = { fromIndex, toIndex ->
+            mainViewModel.moveServer(groupId, fromIndex, toIndex)
+        },
+        header = if (usageInfo != null) {
+            {
+                SubscriptionInfoCard(
+                    info = usageInfo,
+                    fallbackTitle = groupTitle,
+                    onOpenLink = onOpenLink,
+                    onRefresh = { mainViewModel.onAction(MainAction.UpdateGroupSubscription(groupId)) },
+                    onPing = { mainViewModel.onAction(MainAction.TestRealAllServers) },
+                    sortByPing = sortByPing,
+                    onToggleSortByPing = onToggleSortByPing,
+                    collapsed = collapsed,
+                    onToggleCollapse = { collapsed = !collapsed },
+                )
+            }
+        } else null,
+        contentPadding = contentPadding
+    )
 }
 
 private class ServerRowActions(
@@ -208,6 +164,7 @@ private fun ServerListPage(
     actions: ServerRowActions,
     onLocateHandled: () -> Unit,
     onMoveServer: (Int, Int) -> Unit,
+    header: (@Composable () -> Unit)? = null,
     contentPadding: PaddingValues
 ) {
     if (doubleColumnDisplay) {
@@ -273,6 +230,9 @@ private fun ServerListPage(
                 .verticalScrollbar(listState),
             contentPadding = contentPadding
         ) {
+            header?.let { h ->
+                item(key = "header") { h() }
+            }
             itemsIndexed(items = rows, key = { _, item -> item.guid }) { _, row ->
                 if (canReorder && reorderableState != null) {
                     ReorderableItem(
