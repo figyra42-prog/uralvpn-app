@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.DropdownMenu
@@ -74,8 +75,15 @@ fun MainTopBar(
                 }
             }
             Box(modifier = Modifier.wrapContentSize(Alignment.TopEnd)) {
-                IconButton(onClick = { showImportMenu = true }) {
-                    Icon(painterResource(R.drawable.ic_add_24dp), contentDescription = stringResource(R.string.acc_add))
+                IconButton(
+                    onClick = { showImportMenu = true },
+                    modifier = Modifier.size(56.dp),
+                ) {
+                    Icon(
+                        painterResource(R.drawable.ic_add_24dp),
+                        contentDescription = stringResource(R.string.acc_add),
+                        modifier = Modifier.size(30.dp),
+                    )
                 }
                 DropdownMenu(
                     expanded = showImportMenu,

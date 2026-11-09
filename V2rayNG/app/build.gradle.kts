@@ -13,8 +13,8 @@ android {
         applicationId = "app.uralvpn"
         minSdk = 24
         targetSdk = 37
-        versionCode = 21
-        versionName = "1.0.20"
+        versionCode = 22
+        versionName = "1.0.21"
 
         val abiFilterList = (properties["ABI_FILTERS"] as? String)?.split(';')
         splits {
