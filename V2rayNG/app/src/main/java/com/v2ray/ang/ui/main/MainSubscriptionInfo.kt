@@ -204,7 +204,7 @@ internal fun SubscriptionInfoCard(
                     )
                 }
                 model.announce?.let { announce ->
-                    Spacer(Modifier.height(4.dp))
+                    Spacer(Modifier.height(16.dp))
                     Text(
                         text = announce,
                         style = MaterialTheme.typography.bodySmall,

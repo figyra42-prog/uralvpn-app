@@ -437,7 +437,7 @@ private fun ServerListItem(
         Column(
             Modifier
                 .weight(1f)
-                .padding(start = 0.dp, end = 4.dp, top = 10.dp, bottom = 10.dp)
+                .padding(start = 0.dp, end = 4.dp, top = 6.dp, bottom = 6.dp)
         ) {
             Text(name, style = MaterialTheme.typography.bodyMedium.copy(lineBreak = LineBreak.Paragraph), maxLines = 2, overflow = TextOverflow.Ellipsis)
             if (row.description.isNotEmpty()) {

@@ -253,9 +253,9 @@ fun MainScreen(
                             sortByPing = sortByPing,
                             onToggleSortByPing = { onAction(MainAction.ToggleSortByPing) },
                             contentPadding = PaddingValues(
-                                start = 20.dp,
+                                start = 12.dp,
                                 top = 0.dp,
-                                end = 20.dp,
+                                end = 12.dp,
                                 bottom = 80.dp
                             )
                         )
