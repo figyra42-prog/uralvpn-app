@@ -66,7 +66,7 @@ import sh.calvin.reorderable.rememberReorderableLazyGridState
 import sh.calvin.reorderable.rememberReorderableLazyListState
 import kotlin.math.abs
 
-private val FADE_HEIGHT = 28.dp
+private val FADE_HEIGHT = 14.dp
 
 @Composable
 fun GroupPagerPage(
