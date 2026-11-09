@@ -296,13 +296,15 @@ object HttpUtil {
 
     fun downloadToFile(
         request: UrlContentRequest,
-        targetFile: File
+        targetFile: File,
+        onProgress: ((Float) -> Unit)? = null
     ): Boolean {
         val url = request.url ?: return false
         val client = buildOkHttpClient(request.timeout, request.httpPort, request.proxyUsername, request.proxyPassword, followRedirects = true)
         val requestBuilder = Request.Builder()
             .url(url)
             .get()
+            .header("User-agent", request.userAgent ?: "Happ/4.3.0")
             .header("Connection", "close")
         if (request.httpPort != 0 && !request.proxyUsername.isNullOrBlank() && !request.proxyPassword.isNullOrBlank()) {
             requestBuilder.header("Proxy-Authorization", Credentials.basic(request.proxyUsername, request.proxyPassword))
@@ -315,9 +317,20 @@ object HttpUtil {
                     return false
                 }
                 val body = response.body ?: return false
+                val contentLength = body.contentLength()
                 body.byteStream().use { input ->
                     targetFile.outputStream().use { output ->
-                        input.copyTo(output)
+                        val buffer = ByteArray(8192)
+                        var total = 0L
+                        while (true) {
+                            val read = input.read(buffer)
+                            if (read < 0) break
+                            output.write(buffer, 0, read)
+                            total += read
+                            if (contentLength > 0) {
+                                onProgress?.invoke((total.toFloat() / contentLength).coerceIn(0f, 1f))
+                            }
+                        }
                     }
                 }
                 true

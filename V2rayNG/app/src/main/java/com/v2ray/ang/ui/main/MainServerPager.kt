@@ -425,8 +425,8 @@ private fun ServerListItem(
         if (flag.isNotEmpty()) {
             Text(
                 flag,
-                fontSize = 44.sp,
-                lineHeight = 48.sp,
+                fontSize = 40.sp,
+                lineHeight = 44.sp,
                 modifier = Modifier
                     .padding(start = 8.dp)
                     .clip(RoundedCornerShape(21.dp)),

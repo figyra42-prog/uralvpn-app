@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -65,6 +66,8 @@ fun CheckUpdateScreen(
     val showUpdateDialog by viewModel.showUpdateDialog.collectAsStateWithLifecycle()
     val updateResult by viewModel.updateResult.collectAsStateWithLifecycle()
     val downloadedApk by viewModel.downloadedApk.collectAsStateWithLifecycle()
+    val downloadProgress by viewModel.downloadProgress.collectAsStateWithLifecycle()
+    val fallbackUrl by viewModel.fallbackUrl.collectAsStateWithLifecycle()
 
     val libVersion = CoreNativeManager.getLibVersion()
     val versionText = "v${BuildConfig.VERSION_NAME} ($libVersion)"
@@ -96,6 +99,14 @@ fun CheckUpdateScreen(
                 title = stringResource(R.string.update_check_for_update),
                 onClick = { viewModel.checkForUpdates() }
             )
+            downloadProgress?.let { progress ->
+                LinearProgressIndicator(
+                    progress = { progress },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                )
+            }
             VersionInfoBlock(versionText = versionText)
             NavigationBarsSpacer()
         }
@@ -115,6 +126,12 @@ fun CheckUpdateScreen(
             // No installer could handle the APK — fall back to the browser download page.
             updateResult?.downloadUrl?.let { Utils.openUri(context, it) }
         }
+    }
+
+    LaunchedEffect(fallbackUrl) {
+        val url = fallbackUrl ?: return@LaunchedEffect
+        Utils.openUri(context, url)
+        viewModel.consumeFallbackUrl()
     }
 
     if (showUpdateDialog && updateResult != null) {

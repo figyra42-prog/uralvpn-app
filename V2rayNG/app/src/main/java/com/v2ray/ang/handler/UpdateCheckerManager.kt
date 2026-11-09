@@ -89,11 +89,16 @@ object UpdateCheckerManager {
      * @param url The APK download URL.
      * @return The downloaded APK file.
      */
-    suspend fun downloadUpdate(context: Context, url: String): File = withContext(Dispatchers.IO) {
+    suspend fun downloadUpdate(
+        context: Context,
+        url: String,
+        onProgress: ((Float) -> Unit)? = null
+    ): File = withContext(Dispatchers.IO) {
         val targetFile = File(context.cacheDir, "uralvpn_update.apk")
         val ok = HttpUtil.downloadToFile(
             UrlContentRequest(url = url, timeout = 300_000),
-            targetFile
+            targetFile,
+            onProgress
         )
         if (!ok) throw IllegalStateException("Failed to download APK")
         targetFile

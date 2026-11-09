@@ -29,6 +29,12 @@ class CheckUpdateViewModel(application: Application) : BaseViewModel(application
     private val _downloadedApk = MutableStateFlow<File?>(null)
     val downloadedApk: StateFlow<File?> = _downloadedApk.asStateFlow()
 
+    private val _downloadProgress = MutableStateFlow<Float?>(null)
+    val downloadProgress: StateFlow<Float?> = _downloadProgress.asStateFlow()
+
+    private val _fallbackUrl = MutableStateFlow<String?>(null)
+    val fallbackUrl: StateFlow<String?> = _fallbackUrl.asStateFlow()
+
     fun toggleCheckPreRelease(enabled: Boolean) {
         _checkPreRelease.value = enabled
         MmkvManager.encodeSettings(AppConfig.PREF_CHECK_UPDATE_PRE_RELEASE, enabled)
@@ -58,17 +64,27 @@ class CheckUpdateViewModel(application: Application) : BaseViewModel(application
     fun downloadUpdate() {
         val downloadUrl = _updateResult.value?.downloadUrl ?: return
         launchLoading {
+            _downloadProgress.value = 0f
             try {
-                val file = UpdateCheckerManager.downloadUpdate(app, downloadUrl)
+                val file = UpdateCheckerManager.downloadUpdate(app, downloadUrl) { progress ->
+                    _downloadProgress.value = progress
+                }
                 _downloadedApk.value = file
             } catch (e: Exception) {
                 LogUtil.e(AppConfig.TAG, "Failed to download update", e)
                 toastError(R.string.toast_failure)
+                _fallbackUrl.value = downloadUrl
+            } finally {
+                _downloadProgress.value = null
             }
         }
     }
 
     fun consumeDownloadedApk() {
         _downloadedApk.value = null
+    }
+
+    fun consumeFallbackUrl() {
+        _fallbackUrl.value = null
     }
 }
