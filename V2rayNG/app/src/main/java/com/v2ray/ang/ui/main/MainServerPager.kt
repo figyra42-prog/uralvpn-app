@@ -149,7 +149,6 @@ fun GroupPagerPage(
             onMoveServer = { fromIndex, toIndex ->
                 mainViewModel.moveServer(groupId, fromIndex, toIndex)
             },
-            infoHeightPx = infoHeightPx,
             contentPadding = listPadding
         )
         if (usageInfo != null) {
@@ -192,7 +191,6 @@ private fun ServerListPage(
     actions: ServerRowActions,
     onLocateHandled: () -> Unit,
     onMoveServer: (Int, Int) -> Unit,
-    infoHeightPx: Int,
     contentPadding: PaddingValues
 ) {
     if (doubleColumnDisplay) {
@@ -265,10 +263,12 @@ private fun ServerListPage(
                 val offsetPx = listState.layoutInfo.visibleItemsInfo
                     .firstOrNull { it.key == row.guid }
                     ?.offset ?: Int.MAX_VALUE
-                val fade = if (infoHeightPx <= 0 || fadeHeightPx <= 0f) {
+                // offset is relative to the content start (before-content padding excluded),
+                // so the first item sits at 0 and scrolls negative as it goes under the card.
+                val fade = if (fadeHeightPx <= 0f) {
                     1f
                 } else {
-                    ((offsetPx - infoHeightPx) / fadeHeightPx).coerceIn(0f, 1f)
+                    (1f + offsetPx / fadeHeightPx).coerceIn(0f, 1f)
                 }
                 Column(Modifier.graphicsLayer {
                     alpha = fade
